@@ -1,8 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import * as Location from 'expo-location';
-
+import WeatherInfo from './components/WeatherInfo';
+import UnitsPicker from './components/UnitsPicker';
+import ReloadIcon from './components/ReloadIcon'
+import WeatherDetails from './components/WeatherDetails'
 const WEATHER_API_KEY = 'd47349c3936b561477efa8ff80ce32cd';
 const BASE_WEATHER_URL = 'https://api.openweathermap.org/data/2.5/weather?';
 import { AppLoading } from 'expo';
@@ -12,8 +15,10 @@ export default function App() {
   const [unitsSystem, setUnitsSystem] = useState('metric');
   useEffect(() => {
     load()
-  }, [])
+  }, [unitsSystem])
   async function load() {
+    setCurrentWeather(null)
+    setErrorMessage(null)
     try {
       let { status } = await Location.requestPermissionsAsync();
       if (status != 'granted') {
@@ -38,20 +43,35 @@ export default function App() {
     }
   }
   if (currentWeather) {
-    const { wind: { speed, deg }, main: { temp, pressure }, name } = currentWeather
+
     return (
       <View style={styles.container}>
-        <Text>{temp}</Text>
+        <StatusBar style="auto" />
+        <View style={styles.main}>
+          <UnitsPicker unitsSystem={unitsSystem} setUnitsSystem={setUnitsSystem} />
+          <ReloadIcon load={load} />
+          <WeatherInfo currentWeather={currentWeather} />
+        </View>
+        <WeatherDetails currentWeather={currentWeather} unitsSystem={unitsSystem} />
+      </View>
+    );
+  }
+  else if (errorMessage) {
+    return (
+      <View style={styles.main}>
+        <ReloadIcon load={load} />
+        <Text style={{ textAlign: 'center' }}>{errorMessage}</Text>
         <StatusBar style="auto" />
       </View>
     );
-  } else {
+  }
+  else {
     return (
-      <View style={styles.container}>
-        <Text>{errorMessage}</Text>
+      <View style={styles.main}>
+        <ActivityIndicator size="large" />
         <StatusBar style="auto" />
       </View>
-    );
+    )
   }
 
 }
@@ -60,7 +80,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
+  },
+  main: {
     justifyContent: 'center',
+    flex: 1,
   },
 });
