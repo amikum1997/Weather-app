@@ -1,8 +1,9 @@
 # Weather-app<br>
 React Native Based Weather App<br>
 
--- Data Displayed using fetch function<br>
--- component Based Design
+- Data Displayed using fetch function<br>
+- component Based Design <br>
+- get api from openweathermap.org
 
 <br>
 
