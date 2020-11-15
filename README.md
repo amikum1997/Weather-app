@@ -1,7 +1,7 @@
-# Weather-app
-React Native Based Weather App
+# Weather-app<br>
+React Native Based Weather App<br>
 
--- Data Displayed using fetch function
+-- Data Displayed using fetch function<br>
 -- component Based Design
 
 <br>
